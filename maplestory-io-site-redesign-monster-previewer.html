@@ -1,0 +1,348 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>maplestory.io</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;background:#0f1117;color:#e2e8f0;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+
+/* ════════ THEME ════════ */
+.ta-nav{background:#0a0c12;border-bottom:1px solid #1e2235;height:52px;display:flex;align-items:center;padding:0 32px;gap:24px}
+.ta-logo{font-size:18px;font-weight:700;color:#f5c842}.ta-logo span{color:#fff}
+.ta-nav-links{display:flex;gap:20px;margin-left:auto}
+.ta-nav-links a{font-size:13px;color:#718096}.ta-nav-links a:hover{color:#e2e8f0}
+.ta-hero{padding:80px 32px 60px;text-align:center;background:radial-gradient(ellipse at 50% 0%,#1a1d2e 0%,#0f1117 60%)}
+.ta-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#f5c842;margin-bottom:16px}
+.ta-hero h1{font-size:48px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:16px}
+.ta-hero h1 em{color:#f5c842;font-style:normal}
+.ta-hero-sub{font-size:17px;color:#718096;max-width:560px;margin:0 auto 32px;line-height:1.6}
+.ta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.ta-btn-p{background:#f5c842;color:#0a0c12;font-weight:700;padding:12px 28px;border-radius:8px;font-size:14px}
+.ta-btn-s{background:transparent;color:#e2e8f0;font-weight:600;padding:11px 28px;border-radius:8px;font-size:14px;border:1px solid #2d3350}
+.ta-stats{display:flex;justify-content:center;gap:48px;padding:32px;border-top:1px solid #1e2235;border-bottom:1px solid #1e2235;background:#0c0e18;flex-wrap:wrap}
+.ta-stat-val{font-size:28px;font-weight:800;color:#f5c842}
+.ta-stat-lbl{font-size:12px;color:#4a5568;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.ta-section{padding:56px 32px;max-width:1100px;margin:0 auto}
+.ta-hdr{text-align:center;margin-bottom:36px}
+.ta-hdr h2{font-size:28px;font-weight:700;color:#fff;margin-bottom:8px}
+.ta-hdr p{color:#718096;font-size:15px}
+.ta-tools-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.ta-tools-grid .ta-card{flex:0 0 340px;max-width:340px}
+.ta-card{background:#0c0e18;border:1px solid #1e2235;border-radius:12px;padding:24px;transition:border-color .15s;display:flex;flex-direction:column}
+.ta-card:hover{border-color:#f5c842}
+.ta-card.feat{border-color:#f5c84260;background:linear-gradient(135deg,#1a1d2e 0%,#0c0e18 100%)}
+.ta-badge{display:inline-block;background:#f5c842;color:#0a0c12;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;margin-bottom:12px;align-self:flex-start}
+.ta-card-icon{font-size:28px;margin-bottom:12px;line-height:1}
+.ta-card-icon img{max-height:48px;width:auto;image-rendering:pixelated;display:block}
+.ta-card h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px}
+.ta-card p{font-size:13px;color:#718096;line-height:1.6;margin-bottom:16px}
+.ta-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#f5c842;margin-top:auto}
+.ta-feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.ta-feat{background:#0c0e18;border:1px solid #1e2235;border-radius:10px;padding:20px}
+.ta-feat h4{font-size:14px;font-weight:600;color:#e2e8f0;margin-bottom:6px}
+.ta-feat p{font-size:12px;color:#4a5568;line-height:1.5}
+.ta-feat-icon{font-size:20px;margin-bottom:10px}
+.ta-ep-table{width:100%;border-collapse:collapse}
+.ta-ep-table th{text-align:left;font-size:11px;color:#4a5568;text-transform:uppercase;padding:8px 12px;border-bottom:1px solid #1e2235}
+.ta-ep-table td{padding:10px 12px;border-bottom:1px solid #0f1117;font-size:13px}
+.ta-ep-table tr:hover td{background:#0c0e18}
+.ta-method{background:#1e3a2e;color:#34d399;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.ta-path{font-family:monospace;color:#a0aec0;font-size:12px}
+.ta-ok{color:#34d399;font-size:12px}
+.ta-footer{background:#0a0c12;border-top:1px solid #1e2235;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ta-footer-logo{font-size:15px;font-weight:700;color:#f5c842}.ta-footer-logo span{color:#718096}
+.ta-footer-links{display:flex;gap:16px}
+.ta-footer-links a{font-size:12px;color:#4a5568}
+
+/* ── TOOLS DROPDOWN ──────────────────────────────────────────── */
+.ta-nav-tools{position:relative;padding-bottom:16px;margin-bottom:-16px}
+.tools-dropdown{display:none;position:absolute;top:calc(100% - 16px);left:50%;transform:translateX(-50%);background:#0c0e18;border:1px solid #2d3350;border-radius:10px;padding:22px 6px 6px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.6);z-index:200}
+.ta-nav-tools:hover .tools-dropdown{display:block}
+.tools-dropdown-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;font-size:13px}
+.tools-dropdown-item.available{color:#e2e8f0;font-weight:600;cursor:pointer;text-decoration:none}
+.tools-dropdown-item.available:hover{background:#1a1d2e;color:#f5c842}
+.tools-dropdown-item.unavailable{color:#4a5568;font-style:italic;cursor:default;pointer-events:none}
+.tools-dropdown-sep{height:1px;background:#1e2235;margin:4px 0}
+
+/* ════════ MONSTER PREVIEWER ════════ */
+.mp-nav{background:#0a0c12;border-bottom:1px solid #1e2235;height:48px;display:flex;align-items:center;padding:0 20px;gap:16px;position:sticky;top:0;z-index:10}
+.mp-back{display:flex;align-items:center;gap:6px;font-size:13px;color:#718096;padding:4px 10px;border:1px solid #2d3350;border-radius:6px}
+.mp-back:hover{color:#e2e8f0;border-color:#718096}
+.mp-logo{font-size:17px;font-weight:700;color:#f5c842}.mp-logo span{color:#fff}
+.mp-pill{background:#f5c842;color:#0a0c12;font-weight:600;border-radius:20px;padding:4px 14px;font-size:12px}
+.mp-ver{margin-left:auto;font-size:11px;color:#4a5568;background:#1a1d2e;padding:3px 10px;border-radius:4px}
+.mp-layout{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 48px)}
+.mp-sidebar{background:#0c0e18;border-right:1px solid #1e2235;overflow-y:auto;padding:8px 6px 20px}
+.mp-sidebar::-webkit-scrollbar{width:4px}
+.mp-sidebar::-webkit-scrollbar-thumb{background:#2d3350;border-radius:2px}
+.mp-sec{padding:12px 6px 6px;font-size:10px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.8px}
+a.mc{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;border:1px solid transparent;text-decoration:none;color:inherit}
+a.mc:hover{background:#1a1d2e}
+a.mc img{width:38px;height:38px;object-fit:contain;image-rendering:pixelated;flex-shrink:0;background:#0f1117;border-radius:4px}
+.mi .mn{font-size:13px;font-weight:500;color:#e2e8f0}
+.mi .mm{font-size:11px;color:#4a5568;margin-top:1px}
+.bdot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#a855f7;margin-left:4px;vertical-align:middle}
+.mp-main{overflow-y:auto;padding:28px 32px}
+.mp-main::-webkit-scrollbar{width:4px}
+.mp-main::-webkit-scrollbar-thumb{background:#2d3350;border-radius:2px}
+.mp-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:10px;color:#4a5568;text-align:center}
+.mp-wi{font-size:44px;opacity:.35}
+.mp-wt{font-size:15px;font-weight:600;color:#718096}
+
+/* ── MOB PANELS ─────────────────────────────────────────────────── */
+.det{display:none}
+.det:target{display:block}
+.det:has(.asp:target){display:block}
+.det:target ~ .mp-welcome{display:none}
+.det:has(.asp:target) ~ .mp-welcome{display:none}
+
+/* ── SPRITE VISIBILITY ───────────────────────────────────────────── */
+.asp{display:none;image-rendering:pixelated;max-height:190px;max-width:90%}
+.asp-stand{display:block}
+.det:has(.asp-other:target) .asp-stand{display:none}
+.asp-other:target{display:block}
+
+/* ── API URL DISPLAY ─────────────────────────────────────────────── */
+/* All .api-url spans hidden; the one matching :target shows */
+.api-url { display: none }
+/* Default: show stand URL when panel opens */
+.api-url-stand { display: inline }
+/* When a non-stand action is targeted, hide stand URL */
+.det:has(.asp-other:target) .api-url-stand { display: none }
+/* Show the url for whichever action is :target */
+.det:has(#mob-100000-move:target)    .api-url-100000-move,
+.det:has(#mob-100000-hit1:target)    .api-url-100000-hit1,
+.det:has(#mob-100000-die1:target)    .api-url-100000-die1,
+.det:has(#mob-100001-move:target)    .api-url-100001-move,
+.det:has(#mob-100001-hit1:target)    .api-url-100001-hit1,
+.det:has(#mob-100001-die1:target)    .api-url-100001-die1,
+.det:has(#mob-100002-move:target)    .api-url-100002-move,
+.det:has(#mob-100002-hit1:target)    .api-url-100002-hit1,
+.det:has(#mob-100002-die1:target)    .api-url-100002-die1,
+.det:has(#mob-100003-move:target)    .api-url-100003-move,
+.det:has(#mob-100003-hit1:target)    .api-url-100003-hit1,
+.det:has(#mob-100003-die1:target)    .api-url-100003-die1,
+.det:has(#mob-100004-move:target)    .api-url-100004-move,
+.det:has(#mob-100004-jump:target)    .api-url-100004-jump,
+.det:has(#mob-100004-hit1:target)    .api-url-100004-hit1,
+.det:has(#mob-100004-die1:target)    .api-url-100004-die1,
+.det:has(#mob-100005-move:target)    .api-url-100005-move,
+.det:has(#mob-100005-hit1:target)    .api-url-100005-hit1,
+.det:has(#mob-100005-die1:target)    .api-url-100005-die1,
+.det:has(#mob-100006-move:target)    .api-url-100006-move,
+.det:has(#mob-100006-jump:target)    .api-url-100006-jump,
+.det:has(#mob-100006-hit1:target)    .api-url-100006-hit1,
+.det:has(#mob-100006-die1:target)    .api-url-100006-die1,
+.det:has(#mob-100007-move:target)    .api-url-100007-move,
+.det:has(#mob-100007-jump:target)    .api-url-100007-jump,
+.det:has(#mob-100007-hit1:target)    .api-url-100007-hit1,
+.det:has(#mob-100007-die1:target)    .api-url-100007-die1,
+.det:has(#mob-120100-move:target)    .api-url-120100-move,
+.det:has(#mob-120100-hit1:target)    .api-url-120100-hit1,
+.det:has(#mob-120100-die1:target)    .api-url-120100-die1,
+.det:has(#mob-2230100-move:target)   .api-url-2230100-move,
+.det:has(#mob-2230100-jump:target)   .api-url-2230100-jump,
+.det:has(#mob-2230100-hit1:target)   .api-url-2230100-hit1,
+.det:has(#mob-2230100-die1:target)   .api-url-2230100-die1,
+.det:has(#mob-4130100-move:target)   .api-url-4130100-move,
+.det:has(#mob-4130100-hit1:target)   .api-url-4130100-hit1,
+.det:has(#mob-4130100-die1:target)   .api-url-4130100-die1,
+.det:has(#mob-8510000-attack1:target) .api-url-8510000-attack1,
+.det:has(#mob-8510000-attack2:target) .api-url-8510000-attack2,
+.det:has(#mob-8510000-hit1:target)   .api-url-8510000-hit1,
+.det:has(#mob-8510000-die1:target)   .api-url-8510000-die1,
+.det:has(#mob-8150000-fly:target)    .api-url-8150000-fly,
+.det:has(#mob-8150000-attack1:target) .api-url-8150000-attack1,
+.det:has(#mob-8150000-attack2:target) .api-url-8150000-attack2,
+.det:has(#mob-8150000-die1:target)   .api-url-8150000-die1,
+.det:has(#mob-9400300-move:target)   .api-url-9400300-move,
+.det:has(#mob-9400300-attack1:target) .api-url-9400300-attack1,
+.det:has(#mob-9400300-attack2:target) .api-url-9400300-attack2,
+.det:has(#mob-9400300-die1:target)   .api-url-9400300-die1,
+.det:has(#mob-8220002-move:target)   .api-url-8220002-move,
+.det:has(#mob-8220002-attack1:target) .api-url-8220002-attack1,
+.det:has(#mob-8220002-skill1:target) .api-url-8220002-skill1,
+.det:has(#mob-8220002-die1:target)   .api-url-8220002-die1
+{ display: inline }
+
+/* Also re-show stand url when stand is explicitly re-selected */
+.det:has(#mob-100000-stand:target) .api-url-stand,
+.det:has(#mob-100001-stand:target) .api-url-stand,
+.det:has(#mob-100002-stand:target) .api-url-stand,
+.det:has(#mob-100003-stand:target) .api-url-stand,
+.det:has(#mob-100004-stand:target) .api-url-stand,
+.det:has(#mob-100005-stand:target) .api-url-stand,
+.det:has(#mob-100006-stand:target) .api-url-stand,
+.det:has(#mob-100007-stand:target) .api-url-stand,
+.det:has(#mob-120100-stand:target) .api-url-stand,
+.det:has(#mob-2230100-stand:target) .api-url-stand,
+.det:has(#mob-4130100-stand:target) .api-url-stand,
+.det:has(#mob-8510000-stand:target) .api-url-stand,
+.det:has(#mob-8150000-stand:target) .api-url-stand,
+.det:has(#mob-9400300-stand:target) .api-url-stand,
+.det:has(#mob-8220002-stand:target) .api-url-stand
+{ display: inline }
+
+/* URL bar styling */
+.api-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0c0e18;
+  border: 1px solid #1e2235;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.api-bar-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: #4a5568;
+  flex-shrink: 0;
+}
+.api-bar-get {
+  background: #1e3a2e;
+  color: #34d399;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+.api-bar-url {
+  font-family: monospace;
+  font-size: 12px;
+  color: #a0aec0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.api-bar-url .seg-base { color: #718096 }
+.api-bar-url .seg-id   { color: #f5c842 }
+.api-bar-url .seg-act  { color: #34d399 }
+.api-bar-url .seg-qs   { color: #818cf8 }
+
+/* Sprite box */
+.sbox{background:#0c0e18;border:1px solid #1e2235;border-radius:12px;overflow:hidden;margin-bottom:20px}
+.stage{height:220px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#1e2235 0%,#0c0e18 70%)}
+.acts{padding:10px 14px;border-top:1px solid #1e2235;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.al{font-size:10px;color:#4a5568;text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+.ab{display:inline-block;background:#1a1d2e;border:1px solid #2d3350;border-radius:6px;padding:5px 12px;font-size:12px;color:#a0aec0;text-decoration:none}
+.ab:hover{border-color:#f5c842;color:#f5c842}
+.ab-stand{background:#f5c842;color:#0a0c12;border-color:#f5c842;font-weight:600}
+.det:has(.asp-other:target) .ab-stand{background:#1a1d2e;color:#a0aec0;border-color:#2d3350;font-weight:400}
+/* action button highlights */
+.det:has(#mob-100000-move:target) a[href="#mob-100000-move"],.det:has(#mob-100000-hit1:target) a[href="#mob-100000-hit1"],.det:has(#mob-100000-die1:target) a[href="#mob-100000-die1"],
+.det:has(#mob-100001-move:target) a[href="#mob-100001-move"],.det:has(#mob-100001-hit1:target) a[href="#mob-100001-hit1"],.det:has(#mob-100001-die1:target) a[href="#mob-100001-die1"],
+.det:has(#mob-100002-move:target) a[href="#mob-100002-move"],.det:has(#mob-100002-hit1:target) a[href="#mob-100002-hit1"],.det:has(#mob-100002-die1:target) a[href="#mob-100002-die1"],
+.det:has(#mob-100003-move:target) a[href="#mob-100003-move"],.det:has(#mob-100003-hit1:target) a[href="#mob-100003-hit1"],.det:has(#mob-100003-die1:target) a[href="#mob-100003-die1"],
+.det:has(#mob-100004-move:target) a[href="#mob-100004-move"],.det:has(#mob-100004-jump:target) a[href="#mob-100004-jump"],.det:has(#mob-100004-hit1:target) a[href="#mob-100004-hit1"],.det:has(#mob-100004-die1:target) a[href="#mob-100004-die1"],
+.det:has(#mob-100005-move:target) a[href="#mob-100005-move"],.det:has(#mob-100005-hit1:target) a[href="#mob-100005-hit1"],.det:has(#mob-100005-die1:target) a[href="#mob-100005-die1"],
+.det:has(#mob-100006-move:target) a[href="#mob-100006-move"],.det:has(#mob-100006-jump:target) a[href="#mob-100006-jump"],.det:has(#mob-100006-hit1:target) a[href="#mob-100006-hit1"],.det:has(#mob-100006-die1:target) a[href="#mob-100006-die1"],
+.det:has(#mob-100007-move:target) a[href="#mob-100007-move"],.det:has(#mob-100007-jump:target) a[href="#mob-100007-jump"],.det:has(#mob-100007-hit1:target) a[href="#mob-100007-hit1"],.det:has(#mob-100007-die1:target) a[href="#mob-100007-die1"],
+.det:has(#mob-120100-move:target) a[href="#mob-120100-move"],.det:has(#mob-120100-hit1:target) a[href="#mob-120100-hit1"],.det:has(#mob-120100-die1:target) a[href="#mob-120100-die1"],
+.det:has(#mob-2230100-move:target) a[href="#mob-2230100-move"],.det:has(#mob-2230100-jump:target) a[href="#mob-2230100-jump"],.det:has(#mob-2230100-hit1:target) a[href="#mob-2230100-hit1"],.det:has(#mob-2230100-die1:target) a[href="#mob-2230100-die1"],
+.det:has(#mob-4130100-move:target) a[href="#mob-4130100-move"],.det:has(#mob-4130100-hit1:target) a[href="#mob-4130100-hit1"],.det:has(#mob-4130100-die1:target) a[href="#mob-4130100-die1"],
+.det:has(#mob-8510000-attack1:target) a[href="#mob-8510000-attack1"],.det:has(#mob-8510000-attack2:target) a[href="#mob-8510000-attack2"],.det:has(#mob-8510000-hit1:target) a[href="#mob-8510000-hit1"],.det:has(#mob-8510000-die1:target) a[href="#mob-8510000-die1"],
+.det:has(#mob-8150000-fly:target) a[href="#mob-8150000-fly"],.det:has(#mob-8150000-attack1:target) a[href="#mob-8150000-attack1"],.det:has(#mob-8150000-attack2:target) a[href="#mob-8150000-attack2"],.det:has(#mob-8150000-die1:target) a[href="#mob-8150000-die1"],
+.det:has(#mob-9400300-move:target) a[href="#mob-9400300-move"],.det:has(#mob-9400300-attack1:target) a[href="#mob-9400300-attack1"],.det:has(#mob-9400300-attack2:target) a[href="#mob-9400300-attack2"],.det:has(#mob-9400300-die1:target) a[href="#mob-9400300-die1"],
+.det:has(#mob-8220002-move:target) a[href="#mob-8220002-move"],.det:has(#mob-8220002-attack1:target) a[href="#mob-8220002-attack1"],.det:has(#mob-8220002-skill1:target) a[href="#mob-8220002-skill1"],.det:has(#mob-8220002-die1:target) a[href="#mob-8220002-die1"]
+{background:#f5c842;color:#0a0c12;border-color:#f5c842;font-weight:600}
+
+/* Stats */
+.dh{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.dn{font-size:22px;font-weight:700;color:#fff}
+.did{font-size:12px;color:#4a5568;background:#1a1d2e;padding:2px 8px;border-radius:4px;font-family:monospace}
+.bb{background:#7c3aed;color:#e9d5ff;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sc{background:#0c0e18;border:1px solid #1e2235;border-radius:8px;padding:12px}
+.sl{font-size:10px;color:#4a5568;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.sv{font-size:20px;font-weight:700}
+.lvl{color:#818cf8}.hp{color:#f87171}.xp{color:#34d399}.typ{color:#f5c842}
+footer.ibm{text-align:center;font-size:11px;color:#2d3350;padding:8px;border-top:1px solid #1e2235;background:#0a0c12}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="theme theme-a">
+    <nav class="ta-nav">
+      <div class="ta-logo">maple<span>story</span>.io</div>
+      <div class="ta-nav-links">
+        <span style="font-size:13px;color:#718096">Docs</span>
+        <span style="font-size:13px;color:#718096">Endpoints</span>
+        <div class="ta-nav-tools">
+          <span style="font-size:13px;color:#f5c842;font-weight:600;cursor:default">Tools ▾</span>
+          <div class="tools-dropdown">
+            <a class="tools-dropdown-item available" href="maplestory-io-monster-previewer.html"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/stand?resize=1" style="height:20px;width:auto;image-rendering:pixelated;vertical-align:middle;margin-right:4px"> Monster Previewer</a>
+            <a class="tools-dropdown-item available" href="maplestory-io-npc-viewer.html#page-npcs"><img src="https://maplestory.io/api/GMS/208.2.0/npc/1012100/render/stand?resize=1" style="height:20px;width:auto;image-rendering:pixelated;vertical-align:middle;margin-right:4px"> NPC Browser</a>
+            <div class="tools-dropdown-sep"></div>
+            <span class="tools-dropdown-item unavailable">Map Viewer</span>
+            <span class="tools-dropdown-item unavailable">Character Builder</span>
+          </div>
+        </div>
+        <span style="font-size:13px;color:#718096">GitHub</span>
+      </div>
+    </nav>
+    <div class="ta-hero">
+      <div class="ta-eyebrow">Open MapleStory API</div>
+      <h1>Build with <em>MapleStory</em><br />data instantly</h1>
+      <p class="ta-hero-sub">Access monsters, items, maps, NPCs, characters and more through a fast, free REST API powering thousands of community projects.</p>
+      <div class="ta-btns">
+        <span class="ta-btn-p" style="cursor:default">Explore Docs</span>
+        <span class="ta-btn-s" style="cursor:default">View on GitHub</span>
+      </div>
+    </div>
+    <div class="ta-stats">
+      <div><div class="ta-stat-val">8,513</div><div class="ta-stat-lbl">Monsters</div></div>
+      <div><div class="ta-stat-val">40k+</div><div class="ta-stat-lbl">Items</div></div>
+      <div><div class="ta-stat-val">Free</div><div class="ta-stat-lbl">No Auth</div></div>
+      <div><div class="ta-stat-val">GMS</div><div class="ta-stat-lbl">208.2.0</div></div>
+    </div>
+    <div class="ta-section">
+      <div class="ta-hdr"><h2>Interactive Tools</h2><p>Explore MapleStory data visually — no API key needed</p></div>
+      <div class="ta-tools-grid">
+        <div class="ta-card feat"><div class="ta-badge">New</div><div class="ta-card-icon"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/stand?resize=1" alt="Blue Snail"></div><h3>Monster Previewer</h3><p>Browse 8,500+ monsters with live animated sprites. Preview stand, move, attack, and die animations. View level, HP, EXP, and available actions.</p><a class="ta-link" href="maplestory-io-monster-previewer.html">Open Monster Previewer →</a></div>
+        <div class="ta-card feat"><div class="ta-badge">New</div><div class="ta-card-icon"><img src="https://maplestory.io/api/GMS/208.2.0/npc/1012100/render/stand" alt="Athena Pierce"></div><h3>NPC Browser</h3><p>Browse NPCs by region and preview their animated sprites with live API calls.</p><a class="ta-link" href="maplestory-io-npc-viewer.html#page-npcs">Open NPC Browser →</a></div>
+      </div>
+    </div>
+    <div class="ta-section" style="padding-top:0">
+      <div class="ta-hdr"><h2>Everything you need</h2><p>A complete data layer for MapleStory community projects</p></div>
+      <div class="ta-feat-grid">
+        <div class="ta-feat"><div class="ta-feat-icon"></div><h4>No auth required</h4><p>Every endpoint is open. Start immediately with no API key.</p></div>
+        <div class="ta-feat"><div class="ta-feat-icon"></div><h4>Sprite rendering</h4><p>Render any mob or NPC as an animated GIF directly via URL.</p></div>
+        <div class="ta-feat"><div class="ta-feat-icon"></div><h4>JSON data</h4><p>Clean structured JSON for mobs, items, maps, quests, and skills.</p></div>
+        <div class="ta-feat"><div class="ta-feat-icon"></div><h4>GMS &amp; more</h4><p>Global MapleStory 208.2.0. Multiple regions available.</p></div>
+      </div>
+    </div>
+    <div class="ta-section" style="padding-top:0">
+      <h2 style="font-size:22px;font-weight:700;color:#fff;margin-bottom:20px">Popular Endpoints</h2>
+      <table class="ta-ep-table">
+        <thead><tr><th>Method</th><th>Path</th><th>Description</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><span class="ta-method">GET</span></td><td class="ta-path">/api/GMS/208.2.0/mob</td><td style="color:#a0aec0">List all monsters</td><td class="ta-ok">✓ 200</td></tr>
+          <tr><td><span class="ta-method">GET</span></td><td class="ta-path">/api/GMS/208.2.0/mob/:id</td><td style="color:#a0aec0">Monster detail + stats</td><td class="ta-ok">✓ 200</td></tr>
+          <tr><td><span class="ta-method">GET</span></td><td class="ta-path">/api/GMS/208.2.0/mob/:id/render/:action</td><td style="color:#a0aec0">Animated GIF sprite</td><td class="ta-ok">✓ 200</td></tr>
+          <tr><td><span class="ta-method">GET</span></td><td class="ta-path">/api/GMS/208.2.0/npc/:id/render/:action</td><td style="color:#a0aec0">NPC sprite</td><td class="ta-ok">✓ 200</td></tr>
+          <tr><td><span class="ta-method">GET</span></td><td class="ta-path">/api/GMS/208.2.0/item/:id</td><td style="color:#a0aec0">Item data</td><td class="ta-ok">✓ 200</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <footer class="ta-footer"><div class="ta-footer-logo">maple<span>story</span>.io</div><div class="ta-footer-links"><a href="#">Docs</a><a href="#">GitHub</a><a href="#">Status</a></div></footer>
+  </div>
+
+</div>
+
+<footer class="ibm">Made with IBM Bob</footer>
+</body>
+</html>

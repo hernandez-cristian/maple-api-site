@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MapleStory.io API Showcase</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px 40px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #f5c842;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  h1 em { color: #f5c842; font-style: normal; }
+  .subtitle {
+    font-size: 16px;
+    color: #718096;
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 52px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 920px;
+  }
+  .card {
+    background: #141620;
+    border: 1px solid #1e2235;
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .2s, transform .15s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card:hover { border-color: #f5c842; transform: translateY(-2px); }
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: #718096;
+    line-height: 1.6;
+  }
+  .card-link {
+    margin-top: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: #f5c842;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+  }
+  footer {
+    margin-top: 60px;
+    font-size: 12px;
+    color: #4a5568;
+    text-align: center;
+    border-top: 1px solid #1e2235;
+    padding-top: 20px;
+    width: 100%;
+    max-width: 920px;
+  }
+</style>
+</head>
+<body>
+  <p class="badge">MapleStory.io API</p>
+  <h1>The <em>Maple</em> API Showcase</h1>
+  <p class="subtitle">A collection of tools and redesign concepts built on the maplestory.io public API — browse monsters, NPCs, and more.</p>
+
+  <div class="cards">
+    <a class="card" href="maplestory-io-site-redesign-monster-previewer.html">
+      <div class="card-icon">🎨</div>
+      <div class="card-title">Site Redesign Concept</div>
+      <div class="card-desc">A full redesign of the maplestory.io landing page with monster previewer integration and modernised UI.</div>
+      <div class="card-link">View redesign →</div>
+    </a>
+    <a class="card" href="maplestory-io-monster-previewer.html">
+      <div class="card-icon">👾</div>
+      <div class="card-title">Monster Previewer</div>
+      <div class="card-desc">Browse and preview MapleStory monsters using live data from the maplestory.io API, including animations and stats.</div>
+      <div class="card-link">Open tool →</div>
+    </a>
+    <a class="card" href="maplestory-io-npc-viewer.html">
+      <div class="card-icon">🗺️</div>
+      <div class="card-title">NPC Browser</div>
+      <div class="card-desc">Explore NPCs from across the Maple World — search by name, view sprites and metadata via the API.</div>
+      <div class="card-link">Open tool →</div>
+    </a>
+  </div>
+
+  <footer>Built by <a href="https://github.com/hernandez-cristian" style="color:#f5c842;">hernandez-cristian</a> · Powered by maplestory.io API</footer>
+</body>
+</html>

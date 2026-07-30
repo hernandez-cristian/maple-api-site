@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>maplestory.io — Monster Previewer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;background:#0f1117;color:#e2e8f0;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* ── MONSTER PREVIEWER ────────────────────────────────────────── */
+.mp-nav{background:#0a0c12;border-bottom:1px solid #1e2235;height:48px;display:flex;align-items:center;padding:0 20px;gap:16px;position:sticky;top:0;z-index:10}
+.mp-back{display:flex;align-items:center;gap:6px;font-size:13px;color:#718096;padding:4px 10px;border:1px solid #2d3350;border-radius:6px}
+.mp-back:hover{color:#e2e8f0;border-color:#718096}
+.mp-logo{font-size:17px;font-weight:700;color:#f5c842}.mp-logo span{color:#fff}
+.mp-pill{background:#f5c842;color:#0a0c12;font-weight:600;border-radius:20px;padding:4px 14px;font-size:12px}
+.mp-ver{margin-left:auto;font-size:11px;color:#4a5568;background:#1a1d2e;padding:3px 10px;border-radius:4px}
+.mp-layout{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 48px)}
+.mp-sidebar{background:#0c0e18;border-right:1px solid #1e2235;overflow-y:auto;padding:8px 6px 20px}
+.mp-sidebar::-webkit-scrollbar{width:4px}
+.mp-sidebar::-webkit-scrollbar-thumb{background:#2d3350;border-radius:2px}
+.mp-sec{padding:12px 6px 6px;font-size:10px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.8px}
+a.mc{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;border:1px solid transparent;text-decoration:none;color:inherit}
+a.mc:hover{background:#1a1d2e}
+a.mc img{width:38px;height:38px;object-fit:contain;image-rendering:pixelated;flex-shrink:0;background:#0f1117;border-radius:4px}
+.mi .mn{font-size:13px;font-weight:500;color:#e2e8f0}
+.mi .mm{font-size:11px;color:#4a5568;margin-top:1px}
+.bdot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#a855f7;margin-left:4px;vertical-align:middle}
+.mp-main{overflow-y:auto;padding:28px 32px}
+.mp-main::-webkit-scrollbar{width:4px}
+.mp-main::-webkit-scrollbar-thumb{background:#2d3350;border-radius:2px}
+.mp-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:10px;color:#4a5568;text-align:center}
+.mp-wi{font-size:44px;opacity:.35}
+.mp-wt{font-size:15px;font-weight:600;color:#718096}
+
+/* ── MOB PANELS ─────────────────────────────────────────────────── */
+.det{display:none}
+.det:target{display:block}
+.det:has(.asp:target){display:block}
+.det:target ~ .mp-welcome{display:none}
+.det:has(.asp:target) ~ .mp-welcome{display:none}
+
+/* ── SPRITE VISIBILITY ───────────────────────────────────────────── */
+.asp{display:none;image-rendering:pixelated;max-height:190px;max-width:90%}
+.asp-stand{display:block}
+.det:has(.asp-other:target) .asp-stand{display:none}
+.asp-other:target{display:block}
+
+/* ── API URL DISPLAY ─────────────────────────────────────────────── */
+.api-url { display: none }
+.api-url-stand { display: inline }
+.det:has(.asp-other:target) .api-url-stand { display: none }
+.det:has(#mob-100000-move:target)    .api-url-100000-move,
+.det:has(#mob-100000-hit1:target)    .api-url-100000-hit1,
+.det:has(#mob-100000-die1:target)    .api-url-100000-die1,
+.det:has(#mob-100001-move:target)    .api-url-100001-move,
+.det:has(#mob-100001-hit1:target)    .api-url-100001-hit1,
+.det:has(#mob-100001-die1:target)    .api-url-100001-die1,
+.det:has(#mob-100002-move:target)    .api-url-100002-move,
+.det:has(#mob-100002-hit1:target)    .api-url-100002-hit1,
+.det:has(#mob-100002-die1:target)    .api-url-100002-die1,
+.det:has(#mob-100003-move:target)    .api-url-100003-move,
+.det:has(#mob-100003-hit1:target)    .api-url-100003-hit1,
+.det:has(#mob-100003-die1:target)    .api-url-100003-die1,
+.det:has(#mob-100004-move:target)    .api-url-100004-move,
+.det:has(#mob-100004-jump:target)    .api-url-100004-jump,
+.det:has(#mob-100004-hit1:target)    .api-url-100004-hit1,
+.det:has(#mob-100004-die1:target)    .api-url-100004-die1,
+.det:has(#mob-100005-move:target)    .api-url-100005-move,
+.det:has(#mob-100005-hit1:target)    .api-url-100005-hit1,
+.det:has(#mob-100005-die1:target)    .api-url-100005-die1,
+.det:has(#mob-100006-move:target)    .api-url-100006-move,
+.det:has(#mob-100006-jump:target)    .api-url-100006-jump,
+.det:has(#mob-100006-hit1:target)    .api-url-100006-hit1,
+.det:has(#mob-100006-die1:target)    .api-url-100006-die1,
+.det:has(#mob-100007-move:target)    .api-url-100007-move,
+.det:has(#mob-100007-jump:target)    .api-url-100007-jump,
+.det:has(#mob-100007-hit1:target)    .api-url-100007-hit1,
+.det:has(#mob-100007-die1:target)    .api-url-100007-die1,
+.det:has(#mob-120100-move:target)    .api-url-120100-move,
+.det:has(#mob-120100-hit1:target)    .api-url-120100-hit1,
+.det:has(#mob-120100-die1:target)    .api-url-120100-die1,
+.det:has(#mob-2230100-move:target)   .api-url-2230100-move,
+.det:has(#mob-2230100-jump:target)   .api-url-2230100-jump,
+.det:has(#mob-2230100-hit1:target)   .api-url-2230100-hit1,
+.det:has(#mob-2230100-die1:target)   .api-url-2230100-die1,
+.det:has(#mob-4130100-move:target)   .api-url-4130100-move,
+.det:has(#mob-4130100-hit1:target)   .api-url-4130100-hit1,
+.det:has(#mob-4130100-die1:target)   .api-url-4130100-die1,
+.det:has(#mob-8510000-attack1:target) .api-url-8510000-attack1,
+.det:has(#mob-8510000-attack2:target) .api-url-8510000-attack2,
+.det:has(#mob-8510000-hit1:target)   .api-url-8510000-hit1,
+.det:has(#mob-8510000-die1:target)   .api-url-8510000-die1,
+.det:has(#mob-8150000-fly:target)    .api-url-8150000-fly,
+.det:has(#mob-8150000-attack1:target) .api-url-8150000-attack1,
+.det:has(#mob-8150000-attack2:target) .api-url-8150000-attack2,
+.det:has(#mob-8150000-die1:target)   .api-url-8150000-die1,
+.det:has(#mob-9400300-move:target)   .api-url-9400300-move,
+.det:has(#mob-9400300-attack1:target) .api-url-9400300-attack1,
+.det:has(#mob-9400300-attack2:target) .api-url-9400300-attack2,
+.det:has(#mob-9400300-die1:target)   .api-url-9400300-die1,
+.det:has(#mob-8220002-move:target)   .api-url-8220002-move,
+.det:has(#mob-8220002-attack1:target) .api-url-8220002-attack1,
+.det:has(#mob-8220002-skill1:target) .api-url-8220002-skill1,
+.det:has(#mob-8220002-die1:target)   .api-url-8220002-die1
+{ display: inline }
+
+.det:has(#mob-100000-stand:target) .api-url-stand,
+.det:has(#mob-100001-stand:target) .api-url-stand,
+.det:has(#mob-100002-stand:target) .api-url-stand,
+.det:has(#mob-100003-stand:target) .api-url-stand,
+.det:has(#mob-100004-stand:target) .api-url-stand,
+.det:has(#mob-100005-stand:target) .api-url-stand,
+.det:has(#mob-100006-stand:target) .api-url-stand,
+.det:has(#mob-100007-stand:target) .api-url-stand,
+.det:has(#mob-120100-stand:target) .api-url-stand,
+.det:has(#mob-2230100-stand:target) .api-url-stand,
+.det:has(#mob-4130100-stand:target) .api-url-stand,
+.det:has(#mob-8510000-stand:target) .api-url-stand,
+.det:has(#mob-8150000-stand:target) .api-url-stand,
+.det:has(#mob-9400300-stand:target) .api-url-stand,
+.det:has(#mob-8220002-stand:target) .api-url-stand
+{ display: inline }
+
+.api-bar{display:flex;align-items:center;gap:10px;background:#0c0e18;border:1px solid #1e2235;border-radius:8px;padding:8px 14px;margin-bottom:20px;flex-wrap:wrap}
+.api-bar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#4a5568;flex-shrink:0}
+.api-bar-get{background:#1e3a2e;color:#34d399;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;font-family:monospace}
+.api-bar-url{font-family:monospace;font-size:12px;color:#a0aec0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.api-bar-url .seg-base{color:#718096}
+.api-bar-url .seg-id{color:#f5c842}
+.api-bar-url .seg-act{color:#34d399}
+.api-bar-url .seg-qs{color:#818cf8}
+
+.sbox{background:#0c0e18;border:1px solid #1e2235;border-radius:12px;overflow:hidden;margin-bottom:20px}
+.stage{height:220px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#1e2235 0%,#0c0e18 70%)}
+.acts{padding:10px 14px;border-top:1px solid #1e2235;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.al{font-size:10px;color:#4a5568;text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+.ab{display:inline-block;background:#1a1d2e;border:1px solid #2d3350;border-radius:6px;padding:5px 12px;font-size:12px;color:#a0aec0;text-decoration:none}
+.ab:hover{border-color:#f5c842;color:#f5c842}
+.ab-stand{background:#f5c842;color:#0a0c12;border-color:#f5c842;font-weight:600}
+.det:has(.asp-other:target) .ab-stand{background:#1a1d2e;color:#a0aec0;border-color:#2d3350;font-weight:400}
+.det:has(#mob-100000-move:target) a[href="#mob-100000-move"],.det:has(#mob-100000-hit1:target) a[href="#mob-100000-hit1"],.det:has(#mob-100000-die1:target) a[href="#mob-100000-die1"],
+.det:has(#mob-100001-move:target) a[href="#mob-100001-move"],.det:has(#mob-100001-hit1:target) a[href="#mob-100001-hit1"],.det:has(#mob-100001-die1:target) a[href="#mob-100001-die1"],
+.det:has(#mob-100002-move:target) a[href="#mob-100002-move"],.det:has(#mob-100002-hit1:target) a[href="#mob-100002-hit1"],.det:has(#mob-100002-die1:target) a[href="#mob-100002-die1"],
+.det:has(#mob-100003-move:target) a[href="#mob-100003-move"],.det:has(#mob-100003-hit1:target) a[href="#mob-100003-hit1"],.det:has(#mob-100003-die1:target) a[href="#mob-100003-die1"],
+.det:has(#mob-100004-move:target) a[href="#mob-100004-move"],.det:has(#mob-100004-jump:target) a[href="#mob-100004-jump"],.det:has(#mob-100004-hit1:target) a[href="#mob-100004-hit1"],.det:has(#mob-100004-die1:target) a[href="#mob-100004-die1"],
+.det:has(#mob-100005-move:target) a[href="#mob-100005-move"],.det:has(#mob-100005-hit1:target) a[href="#mob-100005-hit1"],.det:has(#mob-100005-die1:target) a[href="#mob-100005-die1"],
+.det:has(#mob-100006-move:target) a[href="#mob-100006-move"],.det:has(#mob-100006-jump:target) a[href="#mob-100006-jump"],.det:has(#mob-100006-hit1:target) a[href="#mob-100006-hit1"],.det:has(#mob-100006-die1:target) a[href="#mob-100006-die1"],
+.det:has(#mob-100007-move:target) a[href="#mob-100007-move"],.det:has(#mob-100007-jump:target) a[href="#mob-100007-jump"],.det:has(#mob-100007-hit1:target) a[href="#mob-100007-hit1"],.det:has(#mob-100007-die1:target) a[href="#mob-100007-die1"],
+.det:has(#mob-120100-move:target) a[href="#mob-120100-move"],.det:has(#mob-120100-hit1:target) a[href="#mob-120100-hit1"],.det:has(#mob-120100-die1:target) a[href="#mob-120100-die1"],
+.det:has(#mob-2230100-move:target) a[href="#mob-2230100-move"],.det:has(#mob-2230100-jump:target) a[href="#mob-2230100-jump"],.det:has(#mob-2230100-hit1:target) a[href="#mob-2230100-hit1"],.det:has(#mob-2230100-die1:target) a[href="#mob-2230100-die1"],
+.det:has(#mob-4130100-move:target) a[href="#mob-4130100-move"],.det:has(#mob-4130100-hit1:target) a[href="#mob-4130100-hit1"],.det:has(#mob-4130100-die1:target) a[href="#mob-4130100-die1"],
+.det:has(#mob-8510000-attack1:target) a[href="#mob-8510000-attack1"],.det:has(#mob-8510000-attack2:target) a[href="#mob-8510000-attack2"],.det:has(#mob-8510000-hit1:target) a[href="#mob-8510000-hit1"],.det:has(#mob-8510000-die1:target) a[href="#mob-8510000-die1"],
+.det:has(#mob-8150000-fly:target) a[href="#mob-8150000-fly"],.det:has(#mob-8150000-attack1:target) a[href="#mob-8150000-attack1"],.det:has(#mob-8150000-attack2:target) a[href="#mob-8150000-attack2"],.det:has(#mob-8150000-die1:target) a[href="#mob-8150000-die1"],
+.det:has(#mob-9400300-move:target) a[href="#mob-9400300-move"],.det:has(#mob-9400300-attack1:target) a[href="#mob-9400300-attack1"],.det:has(#mob-9400300-attack2:target) a[href="#mob-9400300-attack2"],.det:has(#mob-9400300-die1:target) a[href="#mob-9400300-die1"],
+.det:has(#mob-8220002-move:target) a[href="#mob-8220002-move"],.det:has(#mob-8220002-attack1:target) a[href="#mob-8220002-attack1"],.det:has(#mob-8220002-skill1:target) a[href="#mob-8220002-skill1"],.det:has(#mob-8220002-die1:target) a[href="#mob-8220002-die1"]
+{background:#f5c842;color:#0a0c12;border-color:#f5c842;font-weight:600}
+
+.dh{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.dn{font-size:22px;font-weight:700;color:#fff}
+.did{font-size:12px;color:#4a5568;background:#1a1d2e;padding:2px 8px;border-radius:4px;font-family:monospace}
+.bb{background:#7c3aed;color:#e9d5ff;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sc{background:#0c0e18;border:1px solid #1e2235;border-radius:8px;padding:12px}
+.sl{font-size:10px;color:#4a5568;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.sv{font-size:20px;font-weight:700}
+.lvl{color:#818cf8}.hp{color:#f87171}.xp{color:#34d399}.typ{color:#f5c842}
+footer.ibm{text-align:center;font-size:11px;color:#2d3350;padding:8px;border-top:1px solid #1e2235;background:#0a0c12}
+</style>
+</head>
+<body>
+
+<nav class="mp-nav">
+  <a class="mp-back" href="maplestory-io-site-redesign-monster-previewer.html">← Home</a>
+  <div class="mp-logo">maple<span>story</span>.io</div>
+  <div class="mp-pill">Monster Previewer</div>
+  <div class="mp-ver">GMS 208.2.0</div>
+</nav>
+<div class="mp-layout">
+  <div class="mp-sidebar">
+    <div class="mp-sec">Starters</div>
+    <a class="mc" href="#mob-100000"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100000/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Snail</div><div class="mm">Lv.1 · HP 15</div></div></a>
+    <a class="mc" href="#mob-100001"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Blue Snail</div><div class="mm">Lv.2 · HP 20</div></div></a>
+    <a class="mc" href="#mob-100002"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100002/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Red Snail</div><div class="mm">Lv.4 · HP 35</div></div></a>
+    <a class="mc" href="#mob-100003"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100003/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Spore</div><div class="mm">Lv.2 · HP 20</div></div></a>
+    <a class="mc" href="#mob-100004"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100004/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Orange Mushroom</div><div class="mm">Lv.6 · HP 65</div></div></a>
+    <a class="mc" href="#mob-100005"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100005/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Stump</div><div class="mm">Lv.4 · HP 35</div></div></a>
+    <a class="mc" href="#mob-100006"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100006/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Slime</div><div class="mm">Lv.7 · HP 80</div></div></a>
+    <a class="mc" href="#mob-100007"><img src="https://maplestory.io/api/GMS/208.2.0/mob/100007/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Pig</div><div class="mm">Lv.7 · HP 80</div></div></a>
+    <div class="mp-sec">Mid Tier</div>
+    <a class="mc" href="#mob-120100"><img src="https://maplestory.io/api/GMS/208.2.0/mob/120100/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Shroom</div><div class="mm">Lv.3 · HP 25</div></div></a>
+    <a class="mc" href="#mob-2230100"><img src="https://maplestory.io/api/GMS/208.2.0/mob/2230100/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Evil Eye</div><div class="mm">Lv.26 · HP 580</div></div></a>
+    <a class="mc" href="#mob-4130100"><img src="https://maplestory.io/api/GMS/208.2.0/mob/4130100/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Copper Drake</div><div class="mm">Lv.66 · HP 16,000</div></div></a>
+    <div class="mp-sec">Bosses</div>
+    <a class="mc" href="#mob-8510000"><img src="https://maplestory.io/api/GMS/208.2.0/mob/8510000/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Pianus<span class="bdot"></span></div><div class="mm">Lv.110 · HP 30M</div></div></a>
+    <a class="mc" href="#mob-8150000"><img src="https://maplestory.io/api/GMS/208.2.0/mob/8150000/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Crimson Balrog<span class="bdot"></span></div><div class="mm">Lv.100 · HP 100K</div></div></a>
+    <a class="mc" href="#mob-9400300"><img src="https://maplestory.io/api/GMS/208.2.0/mob/9400300/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">The Boss<span class="bdot"></span></div><div class="mm">Lv.170 · HP 150M</div></div></a>
+    <a class="mc" href="#mob-8220002"><img src="https://maplestory.io/api/GMS/208.2.0/mob/8220002/render/stand?resize=1" loading="lazy" /><div class="mi"><div class="mn">Chimera<span class="bdot"></span></div><div class="mm">Lv.99 · HP 3.45M</div></div></a>
+  </div>
+
+  <div class="mp-main">
+
+<div class="det" id="mob-100000">
+  <div class="dh"><div class="dn">Snail</div><div class="did">ID: 100000</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100000</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100000-move"><span class="seg-act">move</span></span><span class="api-url api-url-100000-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100000-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100000-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100000/render/stand?resize=3" /><img class="asp asp-other" id="mob-100000-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100000/render/move?resize=3" /><img class="asp asp-other" id="mob-100000-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100000/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100000-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100000/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100000-stand">stand</a><a class="ab" href="#mob-100000-move">move</a><a class="ab" href="#mob-100000-hit1">hit1</a><a class="ab" href="#mob-100000-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">1</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">15</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">3</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100001">
+  <div class="dh"><div class="dn">Blue Snail</div><div class="did">ID: 100001</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100001</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100001-move"><span class="seg-act">move</span></span><span class="api-url api-url-100001-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100001-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100001-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/stand?resize=3" /><img class="asp asp-other" id="mob-100001-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/move?resize=3" /><img class="asp asp-other" id="mob-100001-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100001-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100001/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100001-stand">stand</a><a class="ab" href="#mob-100001-move">move</a><a class="ab" href="#mob-100001-hit1">hit1</a><a class="ab" href="#mob-100001-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">2</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">20</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">4</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100002">
+  <div class="dh"><div class="dn">Red Snail</div><div class="did">ID: 100002</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100002</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100002-move"><span class="seg-act">move</span></span><span class="api-url api-url-100002-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100002-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100002-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100002/render/stand?resize=3" /><img class="asp asp-other" id="mob-100002-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100002/render/move?resize=3" /><img class="asp asp-other" id="mob-100002-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100002/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100002-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100002/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100002-stand">stand</a><a class="ab" href="#mob-100002-move">move</a><a class="ab" href="#mob-100002-hit1">hit1</a><a class="ab" href="#mob-100002-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">4</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">35</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">8</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100003">
+  <div class="dh"><div class="dn">Spore</div><div class="did">ID: 100003</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100003</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100003-move"><span class="seg-act">move</span></span><span class="api-url api-url-100003-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100003-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100003-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100003/render/stand?resize=3" /><img class="asp asp-other" id="mob-100003-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100003/render/move?resize=3" /><img class="asp asp-other" id="mob-100003-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100003/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100003-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100003/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100003-stand">stand</a><a class="ab" href="#mob-100003-move">move</a><a class="ab" href="#mob-100003-hit1">hit1</a><a class="ab" href="#mob-100003-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">2</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">20</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">4</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100004">
+  <div class="dh"><div class="dn">Orange Mushroom</div><div class="did">ID: 100004</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100004</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100004-move"><span class="seg-act">move</span></span><span class="api-url api-url-100004-jump"><span class="seg-act">jump</span></span><span class="api-url api-url-100004-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100004-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100004-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100004/render/stand?resize=3" /><img class="asp asp-other" id="mob-100004-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100004/render/move?resize=3" /><img class="asp asp-other" id="mob-100004-jump" src="https://maplestory.io/api/GMS/208.2.0/mob/100004/render/jump?resize=3" /><img class="asp asp-other" id="mob-100004-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100004/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100004-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100004/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100004-stand">stand</a><a class="ab" href="#mob-100004-move">move</a><a class="ab" href="#mob-100004-jump">jump</a><a class="ab" href="#mob-100004-hit1">hit1</a><a class="ab" href="#mob-100004-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">6</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">65</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">18</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100005">
+  <div class="dh"><div class="dn">Stump</div><div class="did">ID: 100005</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100005</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100005-move"><span class="seg-act">move</span></span><span class="api-url api-url-100005-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100005-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100005-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100005/render/stand?resize=3" /><img class="asp asp-other" id="mob-100005-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100005/render/move?resize=3" /><img class="asp asp-other" id="mob-100005-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100005/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100005-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100005/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100005-stand">stand</a><a class="ab" href="#mob-100005-move">move</a><a class="ab" href="#mob-100005-hit1">hit1</a><a class="ab" href="#mob-100005-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">4</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">35</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">8</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100006">
+  <div class="dh"><div class="dn">Slime</div><div class="did">ID: 100006</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100006</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100006-move"><span class="seg-act">move</span></span><span class="api-url api-url-100006-jump"><span class="seg-act">jump</span></span><span class="api-url api-url-100006-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100006-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100006-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100006/render/stand?resize=3" /><img class="asp asp-other" id="mob-100006-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100006/render/move?resize=3" /><img class="asp asp-other" id="mob-100006-jump" src="https://maplestory.io/api/GMS/208.2.0/mob/100006/render/jump?resize=3" /><img class="asp asp-other" id="mob-100006-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100006/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100006-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100006/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100006-stand">stand</a><a class="ab" href="#mob-100006-move">move</a><a class="ab" href="#mob-100006-jump">jump</a><a class="ab" href="#mob-100006-hit1">hit1</a><a class="ab" href="#mob-100006-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">7</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">80</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">22</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-100007">
+  <div class="dh"><div class="dn">Pig</div><div class="did">ID: 100007</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">100007</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-100007-move"><span class="seg-act">move</span></span><span class="api-url api-url-100007-jump"><span class="seg-act">jump</span></span><span class="api-url api-url-100007-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-100007-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-100007-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/100007/render/stand?resize=3" /><img class="asp asp-other" id="mob-100007-move" src="https://maplestory.io/api/GMS/208.2.0/mob/100007/render/move?resize=3" /><img class="asp asp-other" id="mob-100007-jump" src="https://maplestory.io/api/GMS/208.2.0/mob/100007/render/jump?resize=3" /><img class="asp asp-other" id="mob-100007-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/100007/render/hit1?resize=3" /><img class="asp asp-other" id="mob-100007-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/100007/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-100007-stand">stand</a><a class="ab" href="#mob-100007-move">move</a><a class="ab" href="#mob-100007-jump">jump</a><a class="ab" href="#mob-100007-hit1">hit1</a><a class="ab" href="#mob-100007-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">7</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">80</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">22</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-120100">
+  <div class="dh"><div class="dn">Shroom</div><div class="did">ID: 120100</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">120100</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-120100-move"><span class="seg-act">move</span></span><span class="api-url api-url-120100-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-120100-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-120100-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/120100/render/stand?resize=3" /><img class="asp asp-other" id="mob-120100-move" src="https://maplestory.io/api/GMS/208.2.0/mob/120100/render/move?resize=3" /><img class="asp asp-other" id="mob-120100-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/120100/render/hit1?resize=3" /><img class="asp asp-other" id="mob-120100-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/120100/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-120100-stand">stand</a><a class="ab" href="#mob-120100-move">move</a><a class="ab" href="#mob-120100-hit1">hit1</a><a class="ab" href="#mob-120100-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">3</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">25</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">6</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-2230100">
+  <div class="dh"><div class="dn">Evil Eye</div><div class="did">ID: 2230100</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">2230100</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-2230100-move"><span class="seg-act">move</span></span><span class="api-url api-url-2230100-jump"><span class="seg-act">jump</span></span><span class="api-url api-url-2230100-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-2230100-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-2230100-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/2230100/render/stand?resize=3" /><img class="asp asp-other" id="mob-2230100-move" src="https://maplestory.io/api/GMS/208.2.0/mob/2230100/render/move?resize=3" /><img class="asp asp-other" id="mob-2230100-jump" src="https://maplestory.io/api/GMS/208.2.0/mob/2230100/render/jump?resize=3" /><img class="asp asp-other" id="mob-2230100-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/2230100/render/hit1?resize=3" /><img class="asp asp-other" id="mob-2230100-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/2230100/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-2230100-stand">stand</a><a class="ab" href="#mob-2230100-move">move</a><a class="ab" href="#mob-2230100-jump">jump</a><a class="ab" href="#mob-2230100-hit1">hit1</a><a class="ab" href="#mob-2230100-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">26</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">580</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">63</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-4130100">
+  <div class="dh"><div class="dn">Copper Drake</div><div class="did">ID: 4130100</div></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">4130100</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-4130100-move"><span class="seg-act">move</span></span><span class="api-url api-url-4130100-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-4130100-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=3</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-4130100-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/4130100/render/stand?resize=3" /><img class="asp asp-other" id="mob-4130100-move" src="https://maplestory.io/api/GMS/208.2.0/mob/4130100/render/move?resize=3" /><img class="asp asp-other" id="mob-4130100-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/4130100/render/hit1?resize=3" /><img class="asp asp-other" id="mob-4130100-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/4130100/render/die1?resize=3" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-4130100-stand">stand</a><a class="ab" href="#mob-4130100-move">move</a><a class="ab" href="#mob-4130100-hit1">hit1</a><a class="ab" href="#mob-4130100-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">66</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">16,000</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">1,550</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Normal</div></div></div>
+</div>
+
+<div class="det" id="mob-8510000">
+  <div class="dh"><div class="dn">Pianus</div><div class="did">ID: 8510000</div><span class="bb">Boss</span></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">8510000</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-8510000-attack1"><span class="seg-act">attack1</span></span><span class="api-url api-url-8510000-attack2"><span class="seg-act">attack2</span></span><span class="api-url api-url-8510000-hit1"><span class="seg-act">hit1</span></span><span class="api-url api-url-8510000-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=2</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-8510000-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/8510000/render/stand?resize=2" /><img class="asp asp-other" id="mob-8510000-attack1" src="https://maplestory.io/api/GMS/208.2.0/mob/8510000/render/attack1?resize=2" /><img class="asp asp-other" id="mob-8510000-attack2" src="https://maplestory.io/api/GMS/208.2.0/mob/8510000/render/attack2?resize=2" /><img class="asp asp-other" id="mob-8510000-hit1" src="https://maplestory.io/api/GMS/208.2.0/mob/8510000/render/hit1?resize=2" /><img class="asp asp-other" id="mob-8510000-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/8510000/render/die1?resize=2" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-8510000-stand">stand</a><a class="ab" href="#mob-8510000-attack1">attack1</a><a class="ab" href="#mob-8510000-attack2">attack2</a><a class="ab" href="#mob-8510000-hit1">hit1</a><a class="ab" href="#mob-8510000-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">110</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">30M</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">215,000</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Boss</div></div></div>
+</div>
+
+<div class="det" id="mob-8150000">
+  <div class="dh"><div class="dn">Crimson Balrog</div><div class="did">ID: 8150000</div><span class="bb">Boss</span></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">8150000</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-8150000-fly"><span class="seg-act">fly</span></span><span class="api-url api-url-8150000-attack1"><span class="seg-act">attack1</span></span><span class="api-url api-url-8150000-attack2"><span class="seg-act">attack2</span></span><span class="api-url api-url-8150000-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=2</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-8150000-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/8150000/render/stand?resize=2" /><img class="asp asp-other" id="mob-8150000-fly" src="https://maplestory.io/api/GMS/208.2.0/mob/8150000/render/fly?resize=2" /><img class="asp asp-other" id="mob-8150000-attack1" src="https://maplestory.io/api/GMS/208.2.0/mob/8150000/render/attack1?resize=2" /><img class="asp asp-other" id="mob-8150000-attack2" src="https://maplestory.io/api/GMS/208.2.0/mob/8150000/render/attack2?resize=2" /><img class="asp asp-other" id="mob-8150000-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/8150000/render/die1?resize=2" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-8150000-stand">stand</a><a class="ab" href="#mob-8150000-fly">fly</a><a class="ab" href="#mob-8150000-attack1">attack1</a><a class="ab" href="#mob-8150000-attack2">attack2</a><a class="ab" href="#mob-8150000-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">100</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">100K</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">8,000</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Boss</div></div></div>
+</div>
+
+<div class="det" id="mob-9400300">
+  <div class="dh"><div class="dn">The Boss</div><div class="did">ID: 9400300</div><span class="bb">Boss</span></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">9400300</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-9400300-move"><span class="seg-act">move</span></span><span class="api-url api-url-9400300-attack1"><span class="seg-act">attack1</span></span><span class="api-url api-url-9400300-attack2"><span class="seg-act">attack2</span></span><span class="api-url api-url-9400300-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=2</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-9400300-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/9400300/render/stand?resize=2" /><img class="asp asp-other" id="mob-9400300-move" src="https://maplestory.io/api/GMS/208.2.0/mob/9400300/render/move?resize=2" /><img class="asp asp-other" id="mob-9400300-attack1" src="https://maplestory.io/api/GMS/208.2.0/mob/9400300/render/attack1?resize=2" /><img class="asp asp-other" id="mob-9400300-attack2" src="https://maplestory.io/api/GMS/208.2.0/mob/9400300/render/attack2?resize=2" /><img class="asp asp-other" id="mob-9400300-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/9400300/render/die1?resize=2" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-9400300-stand">stand</a><a class="ab" href="#mob-9400300-move">move</a><a class="ab" href="#mob-9400300-attack1">attack1</a><a class="ab" href="#mob-9400300-attack2">attack2</a><a class="ab" href="#mob-9400300-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">170</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">150M</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">600,000</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Boss</div></div></div>
+</div>
+
+<div class="det" id="mob-8220002">
+  <div class="dh"><div class="dn">Chimera</div><div class="did">ID: 8220002</div><span class="bb">Boss</span></div>
+  <div class="api-bar">
+    <span class="api-bar-label">API call</span><span class="api-bar-get">GET</span>
+    <span class="api-bar-url"><span class="seg-base">maplestory.io/api/GMS/208.2.0/mob/</span><span class="seg-id">8220002</span><span class="seg-base">/render/</span><span class="api-url api-url-stand"><span class="seg-act">stand</span></span><span class="api-url api-url-8220002-move"><span class="seg-act">move</span></span><span class="api-url api-url-8220002-attack1"><span class="seg-act">attack1</span></span><span class="api-url api-url-8220002-skill1"><span class="seg-act">skill1</span></span><span class="api-url api-url-8220002-die1"><span class="seg-act">die1</span></span><span class="seg-qs">?resize=2</span></span>
+  </div>
+  <div class="sbox"><div class="stage"><img class="asp asp-stand" id="mob-8220002-stand" src="https://maplestory.io/api/GMS/208.2.0/mob/8220002/render/stand?resize=2" /><img class="asp asp-other" id="mob-8220002-move" src="https://maplestory.io/api/GMS/208.2.0/mob/8220002/render/move?resize=2" /><img class="asp asp-other" id="mob-8220002-attack1" src="https://maplestory.io/api/GMS/208.2.0/mob/8220002/render/attack1?resize=2" /><img class="asp asp-other" id="mob-8220002-skill1" src="https://maplestory.io/api/GMS/208.2.0/mob/8220002/render/skill1?resize=2" /><img class="asp asp-other" id="mob-8220002-die1" src="https://maplestory.io/api/GMS/208.2.0/mob/8220002/render/die1?resize=2" /></div><div class="acts"><span class="al">Action:</span><a class="ab ab-stand" href="#mob-8220002-stand">stand</a><a class="ab" href="#mob-8220002-move">move</a><a class="ab" href="#mob-8220002-attack1">attack1</a><a class="ab" href="#mob-8220002-skill1">skill1</a><a class="ab" href="#mob-8220002-die1">die1</a></div></div>
+  <div class="sg"><div class="sc"><div class="sl">Level</div><div class="sv lvl">99</div></div><div class="sc"><div class="sl">Max HP</div><div class="sv hp">3.45M</div></div><div class="sc"><div class="sl">EXP</div><div class="sv xp">69,950</div></div><div class="sc"><div class="sl">Type</div><div class="sv typ">Boss</div></div></div>
+</div>
+
+    <div class="mp-welcome">
+      <div class="mp-wi"></div>
+      <div class="mp-wt">Pick a monster from the left panel</div>
+    </div>
+  </div>
+</div>
+
+<footer class="ibm">Made with IBM Bob</footer>
+</body>
+</html>
